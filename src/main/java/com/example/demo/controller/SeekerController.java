@@ -1,7 +1,9 @@
 package com.example.demo.controller;
+
 import com.example.demo.model.Seeker;
 import com.example.demo.service.SeekerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,45 +21,47 @@ public class SeekerController {
         this.seekerService = seekerService;
     }
 
+    // Get all seekers
     @GetMapping
     public List<Seeker> getAllSeekers() {
         return seekerService.findAllSeekers();
     }
 
+    // Get a seeker by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Seeker> getSeekerById(@PathVariable Long id) {
-        Optional<Seeker> seeker = seekerService.findSeekerById(id);
-        return seeker.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Seeker> getSeekerById(@PathVariable("id") Long seekerId) {
+        return seekerService.findSeekerById(seekerId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // Create a new seeker
     @PostMapping
-    public Seeker createSeeker(@RequestBody Seeker seeker) {
-        return seekerService.saveSeeker(seeker);
+    public ResponseEntity<?> createSeeker(@RequestBody Seeker newSeeker) {
+        try {
+            Seeker savedSeeker = seekerService.saveOrUpdateSeeker(newSeeker);
+            return ResponseEntity.ok(savedSeeker);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
+    // Update an existing seeker
     @PutMapping("/{id}")
-    public ResponseEntity<Seeker> updateSeeker(@PathVariable Long id, @RequestBody Seeker seekerDetails) {
-        Optional<Seeker> seekerOptional = seekerService.findSeekerById(id);
-        if (seekerOptional.isPresent()) {
-            Seeker seekerToUpdate = seekerOptional.get();
-            seekerToUpdate.setName(seekerDetails.getName());
-            seekerToUpdate.setBloodType(seekerDetails.getBloodType());
-            // Add more fields to update as necessary
-            Seeker updatedSeeker = seekerService.saveSeeker(seekerToUpdate);
-            return ResponseEntity.ok(updatedSeeker);
-        } else {
+    public ResponseEntity<Seeker> updateSeeker(@PathVariable("id") Long seekerId, @RequestBody Seeker updatedSeeker) {
+        updatedSeeker.setId(seekerId);
+        try {
+            Seeker savedSeeker = seekerService.saveOrUpdateSeeker(updatedSeeker);
+            return ResponseEntity.ok(savedSeeker);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
+    // Delete a seeker
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSeeker(@PathVariable Long id) {
-        Optional<Seeker> seeker = seekerService.findSeekerById(id);
-        if (seeker.isPresent()) {
-            seekerService.deleteSeeker(id);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> deleteSeeker(@PathVariable("id") Long seekerId) {
+        seekerService.deleteSeeker(seekerId);
+        return ResponseEntity.ok().build();
     }
 }

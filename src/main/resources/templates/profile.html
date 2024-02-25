@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 50px;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 0 auto;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Profile</h2>
+    <div th:if="${userDetails.isPresent()}">
+        <form th:action="@{/updateUser}" method="post">
+            <input type="hidden" th:field="${userDetails.id}" /> <!-- Hidden input for user ID -->
+            <p>Name: <input type="text" th:field="${userDetails.name}" placeholder="Enter your name"/></p>
+            <p>Blood Type: <input type="text" th:field="${userDetails.bloodType}" /></p>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+    <div th:unless="${userDetails.isPresent()}">
+        <p class="error-message">User not found.</p>
+    </div>
+</body>
+</html>
