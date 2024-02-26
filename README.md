@@ -9,9 +9,9 @@ The BloodBank application is designed to facilitate the management of blood dono
 - **Seeker Management**: Allows users to add, update, and remove seekers who are looking for blood donations.
 - **Database Integration**: Uses a MySQL database to store information about seekers, including their name and blood type.
 - **RESTful API**: Provides a RESTful interface for managing seekers, enabling CRUD operations through HTTP requests.
-- **User Authentication: Secure login session management with an AuthController.
-- **Donor and Seeker Management: Enables users to register as donors or seekers, manage profiles, and update their information.
-- **Blood Stock Management: Tracks available blood stocks, allowing updates to stock levels as donations are made or utilized.
+- **User Authentication**: Secure login session management with an AuthController.
+- **Donor and Seeker Management**: Enables users to register as donors or seekers, manage profiles, and update their information.
+- **Blood Stock Management**: Tracks available blood stocks, allowing updates to stock levels as donations are made or utilized.
 
 ## Technologies Used
 
